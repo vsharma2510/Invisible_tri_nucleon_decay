@@ -1,0 +1,42 @@
+# Configuration file for ARES
+
+MinEnergy = 0
+MaxEnergy = 10000
+
+module MCReader
+end
+
+module EnergyUnit
+       InputEnergyUnit = MeV
+       OutputEnergyUnit = keV
+       UpdateEnergyVariable = true
+end
+
+module Resolution
+       EnergyResolution = 8,0,0,1
+       UpdateEnergyVariable = true
+end
+
+module Integrate
+       IntegrationWindow = 0.005
+       EnergyByParticle = false
+end
+
+module PileUp
+       PileUpFront = 7
+       PileUpBack = 3
+       DeadTime = 0.75
+end
+
+module Coincidence
+       CoincidenceWindow = 5
+       DistanceCut = 150
+       ChannelPositionFile = /global/projecta/projectdirs/cuore/scratch/vsharma/MC/Invisible_tri_nucleon_decay/cfg/qshields_crystalPos.list
+       ChannelPositionVariable = Channel
+end
+
+##################################################################
+
+InputFile = /global/projecta/projectdirs/cuore/scratch/vsharma/MC/Invisible_tri_nucleon_decay/simulation_output/127In_decay_chain_qshields_1000000.root
+
+OutputFile = /global/projecta/projectdirs/cuore/scratch/vsharma/MC/Invisible_tri_nucleon_decay/simulation_output/127In_decay_coincidence_test.root
