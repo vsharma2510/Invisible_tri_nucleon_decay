@@ -1,0 +1,31 @@
+
+# Coincidences
+
+# Coincidence@Multiplicity            Multiplicity_NoDistCut
+# Coincidence@Multiplet               Multiplet_NoDistCut
+# Coincidence@MultipletIndex          MultipletIndex_NoDistCut
+# Coincidence@MultipletEnergy         MultipletEnergy_NoDistCut
+# Coincidence@TotalEnergy             TotalEnergy_NoDistCut
+
+Coincidence@Multiplicity_DistCut    Multiplicity
+Coincidence@Multiplet_DistCut       Multiplet[Multiplicity]
+Coincidence@MultipletIndex_DistCut  MultipletIndex
+Coincidence@MultipletEnergy_DistCut MultipletEnergy[Multiplicity]
+Coincidence@TotalEnergy_DistCut     TotalEnergy
+
+# Timing
+
+# AbsTime@DeltaT              DeltaT
+# AbsTime@DeltaT_SameChannel  DeltaT_SameChannel
+
+# Geometry
+Map@Tower       Tower
+Map@Floor       Floor
+Map@Layer       Layer
+
+# Other
+Channel                 Channel_MC
+Dataset@Dataset         Dataset
+Efficiency_PSA@Filtered PSA
+Efficiency_PCA@Filtered PCA
+MultipletValidation@Filtered    MultipletValidation
