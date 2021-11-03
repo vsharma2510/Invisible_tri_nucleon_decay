@@ -1,0 +1,13 @@
+all: GetCoincidenceWide GetCoincidenceNarrow
+CC=g++
+CFLAGS= -g -Wall `root-config --cflags`
+LDFLAGS= `root-config --libs`
+
+GetCoincidenceWide: GetCoincidencesSimWideCut.C
+	$(CC) GetCoincidencesSimWideCut.C $(CFLAGS) $(LDFLAGS) -o GetCoincidenceWide
+
+GetCoincidenceNarrow: GetCoincidencesSimNarrowCut.C
+	$(CC) GetCoincidencesSimNarrowCut.C $(CFLAGS) $(LDFLAGS) -o GetCoincidenceNarrow
+
+clean:
+	rm ./GetCoincidenceWide ./GetCoincidenceNarrow
