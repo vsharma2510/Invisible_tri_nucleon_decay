@@ -24,6 +24,7 @@
 #include <vector>
 #include <time.h>
 
+
 using namespace std;
 
 void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,double prompt_high,double delayed_low,double delayed_high)
@@ -35,28 +36,23 @@ void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,d
     }
   coincidence_plot->GetXaxis()->SetTitle("Prompt Energy [keV]");
   coincidence_plot->GetYaxis()->SetTitle("Delayed Energy [keV]");
-  coincidence_plot->Draw("colz");
-  TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_narrow.root","RECREATE");
+  coincidence_plot->Draw();
+  TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_wide_acc.root","RECREATE");
   output_file->cd();
   coincidence_plot->Write("coincidence_plot");
 }
 
-void PlotCoincidenceTime(vector<pair<double,double>> pair_vector, double range)
+void PlotCoincidenceTime(vector<pair<double,double>> pair_vector)
 {
-  TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range,0,range);
+  TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",1000,0,1000);
   for(auto i=0;i<pair_vector.size();++i)
     {
       coincidence_plot->Fill(pair_vector.at(i).second-pair_vector.at(i).first);
     }
   coincidence_plot->GetXaxis()->SetTitle("Delayed Time - Prompt Time [s]");
   coincidence_plot->GetYaxis()->SetTitle("Counts");
-
-  TF1* exp_fit = new TF1("exp_fit","expo(0)",0,range);
-  exp_fit->SetParameters(0,-0.003);
-  exp_fit->SetLineWidth(2);
-  coincidence_plot->Fit(exp_fit,"R");
-
-  TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_narrow_timing.root","RECREATE");
+  coincidence_plot->Draw();
+  TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_wide_acc_timing.root","RECREATE");
   output_file->cd();
   coincidence_plot->Write("coincidence_plot_timing");
 }
@@ -64,6 +60,7 @@ void PlotCoincidenceTime(vector<pair<double,double>> pair_vector, double range)
 
 int main()
 {
+
   //Opening ares simulation file
   TFile* sim_file = TFile::Open("../simulation_output/127In_output/127In_decay_chain_ares_1000000.root");
   if(!sim_file){cout<<"Error opening sim root file!"<<endl;}
@@ -73,29 +70,27 @@ int main()
   if(!sim_tree){cout<<"Error opening sim event tree!"<<endl;}
 
   //Variables to be used for tree access
-  double energy,time; //Energy deposited, timestamp of event(local to the chain)
+  double total_energy,time; //Energy deposited, timestamp of event(local to the chain)
   int channel,multiplicity,multi_index,multiplicity_dist; //Channel number, Multiplet Index
   Long64_t multi_entry; //Multiplet Entry
-  ULong64_t chain_num; //Sim chain num
-  int chain_change; //Variable to keep track of chain changes
+  ULong64_t chain_num; //Sim chain number
   ULong64_t temp_chain_num=1;
-  double multiplet_energy [2];
 
   //Accessing branches
+  //sim_tree->SetBranchStatus("*",1);
   sim_tree->SetBranchAddress("Multiplicity",&multiplicity);
-  sim_tree->SetBranchAddress("Energy",&energy);
+  sim_tree->SetBranchAddress("TotalEnergy",&total_energy); 
   sim_tree->SetBranchAddress("Channel",&channel);
   sim_tree->SetBranchAddress("ChainNumber",&chain_num);
   sim_tree->SetBranchAddress("Time",&time);
-  sim_tree->SetBranchAddress("MultipletEnergy",&multiplet_energy);
 
   //Get number of entries
   int numEntries = sim_tree->GetEntries();
-  cout<<"Number of entries is "<<numEntries<<endl;
+  cout<<"Number of entries is "<< numEntries<<endl;
 
-  bool prompt_event_found=false; //Variable to keep flag prompt event
-  bool delayed_event_found=false; //Variable to keep flag delayed event
-  
+  //int temp_chain_num=0; //Variable to keep track of chain number in loop
+  bool prompt_event_found=false; //Variable to keep track of prompt event
+
   //Variables to record coincidence information
   double prompt_energy,prompt_time;
   int prompt_channel;
@@ -104,13 +99,10 @@ int main()
   vector<pair<double,double>> coincidence_energy;
   vector<pair<double,double>> coincidence_time;
   vector<pair<int,int>> coincidence_channel;
-  
-  //Energy cuts
-  double prompt_low=1587, prompt_high=1607;
-  double delayed_low=480, delayed_high=500;
 
-  //Time cut
-  double time_low=0.01, time_high=1800;
+  //Energy cuts
+  double prompt_low=1500, prompt_high=6500;
+  double delayed_low=400, delayed_high=3500;
   
   //Looping over tree entries
   for(int e=0;e<numEntries;e++)
@@ -123,28 +115,20 @@ int main()
 	  //Checking if event is M2
 	  if(multiplicity==2)
 	    {
-	      //In case prompt event has already been found, look for delayed event
+	      //In case prompt event has already been found, look for delayed_event
 	      if(prompt_event_found)
 		{
-		  if(multiplet_energy[0]>delayed_low && multiplet_energy[0]<delayed_high && time-prompt_time>time_low && time-prompt_time<time_high) 
+		  //Applying energy and time cuts for delayed event
+		  if(total_energy>delayed_low && total_energy<delayed_high && prompt_time>3000)
 		    {
-		      delayed_event_found=1;
-		      energy=multiplet_energy[0];
-		    }
-		  if(multiplet_energy[1]>delayed_low && multiplet_energy[1]<delayed_high && time-prompt_time >time_low && time-prompt_time<time_high)
-		    {
-		      delayed_event_found=1;
-		      energy=multiplet_energy[1];
-		    }
-		  if(delayed_event_found)
-		    {
-		      delayed_energy=energy;
+		      delayed_energy=total_energy;
 		      delayed_time=time;
 		      delayed_channel=channel;
 		      coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
 		      coincidence_time.push_back(make_pair(prompt_time,delayed_time));
 		      coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
-		      delayed_event_found=0;
+		      //cout<<"Event found"<<endl;
+		      //prompt_event_found=0;
 		    }
 		  else
 		    {
@@ -153,21 +137,13 @@ int main()
 		}
 	      else
 		{
-		  if(multiplet_energy[0]>prompt_low && multiplet_energy[0]<prompt_high) 
+		  //Applying energy and time cuts for prompt event
+		  if(total_energy>prompt_low && total_energy<prompt_high)
 		    {
-		      prompt_event_found=1;
-		      energy=multiplet_energy[0];
-		    }
-		  if(multiplet_energy[1]>prompt_low && multiplet_energy[1]<prompt_high)
-		    {
-		      prompt_event_found=1;
-		      energy=multiplet_energy[1];
-		    }
-		  if(prompt_event_found)
-		    {
-		      prompt_energy=energy;
+		      prompt_energy=total_energy;
 		      prompt_time=time;
 		      prompt_channel=channel;
+		      prompt_event_found=1;
 		    }
 		  else
 		    {
@@ -182,24 +158,16 @@ int main()
 	}
       else
 	{
-	  chain_change++;
 	  prompt_event_found=0;
 	  temp_chain_num=chain_num;
 	}
     }
   
   //Plotting prompt energy and delayed energy in a 2d histogram
-  PlotCoincidence(coincidence_energy,prompt_low,prompt_high,delayed_low,delayed_high);
-  PlotCoincidenceTime(coincidence_time,time_high);
+  PlotCoincidence(coincidence_energy,prompt_low,prompt_high,delayed_low,delayed_high); 
+  PlotCoincidenceTime(coincidence_time);
   
   return 0;
 }
 
 
-
-
-
-      
-    
-	      
-  
