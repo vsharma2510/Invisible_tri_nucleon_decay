@@ -27,46 +27,33 @@
 
 using namespace std;
 
-void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,double prompt_high,double delayed_low,double delayed_high)
+void PlotMultiplet(vector<pair<double,double>> pair_vector, vector<pair<double,double>> time_pair_vector, double prompt_low,double prompt_high,double delayed_low,double delayed_high)
 {
   //Define 2D histogram for plotting delayed energy vs prompt energy of coincident events
-  TH2D* coincidence_plot = new TH2D("h_coinc","Delayed energy vs Prompt energy",(prompt_high-prompt_low)/25,prompt_low,prompt_high,(delayed_high-delayed_low)/25,delayed_low,delayed_high);
+  TH2D* coincidence_plot = new TH2D("h_coinc","E1 vs E2 (prompt)",(prompt_high-prompt_low)/25,prompt_low,prompt_high,(delayed_high-delayed_low)/25,delayed_low,delayed_high);
+  TH2D* multiplet_time_1 =  new TH2D("h_coinc_2","E1 vs dT (prompt)",1800,0,1800,(prompt_high-prompt_low)/25,prompt_low,prompt_high);
+  TH2D* multiplet_time_2 =  new TH2D("h_coinc_3","E2 vs dT (prompt)",1800,0,1800,(prompt_high-prompt_low)/25,prompt_low,prompt_high);
   for(auto i=0;i<pair_vector.size();++i)
     {
       //Fill plot with values in pair_vector containing coincident event energy
       coincidence_plot->Fill(pair_vector.at(i).first,pair_vector.at(i).second);
+      multiplet_time_1->Fill((time_pair_vector.at(i).second)-(time_pair_vector.at(i).first), pair_vector.at(i).first);
+      multiplet_time_2->Fill((time_pair_vector.at(i).second)-(time_pair_vector.at(i).first), pair_vector.at(i).second);
     }
-  coincidence_plot->GetXaxis()->SetTitle("Prompt Energy [keV]");
-  coincidence_plot->GetYaxis()->SetTitle("Delayed Energy [keV]");
+  coincidence_plot->GetXaxis()->SetTitle("Multiplet 1 [keV]");
+  coincidence_plot->GetYaxis()->SetTitle("Multiplet 2 [keV]");
+  multiplet_time_1->GetXaxis()->SetTitle("dT [sec]");
+  multiplet_time_1->GetYaxis()->SetTitle("Multiplet 1 [keV]");
+  multiplet_time_2->GetXaxis()->SetTitle("dT [sec]");
+  multiplet_time_2->GetYaxis()->SetTitle("Multiplet 2 [keV]");
   coincidence_plot->Draw();
-  TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_wide.root","RECREATE");
+  multiplet_time_1->Draw();
+  multiplet_time_2->Draw();
+  TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_wide_e1e2_prompt.root","RECREATE");
   output_file->cd();
   coincidence_plot->Write("coincidence_plot");
-  output_file->Close();
-}
-
-void PlotCoincidenceTime(vector<pair<double,double>> pair_vector,double range)
-{
-  //Define 2D histogram for plotting time difference between delayed events and prompt events
-  TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range/30,0,range);
-  for(auto i=0;i<pair_vector.size();++i)
-    {
-      //Fill plot with values in pair_vector containing time differences between coincident events
-      coincidence_plot->Fill(pair_vector.at(i).second-pair_vector.at(i).first);
-    }
-  coincidence_plot->GetXaxis()->SetTitle("Delayed Time - Prompt Time [s]");
-  coincidence_plot->GetYaxis()->SetTitle("Counts");
-  
-  //TF1* exp_fit = new TF1("exp_fit","expo(0)+pol0(2)",0,range);
-  TF1* exp_fit = new TF1("exp_fit","([0]*exp(-(x)/(60*[1]))+[2])",40,1800);
-  exp_fit->SetParameters(8,5.2,100);
-  exp_fit->SetParName(1,"#tau (min)");
-  coincidence_plot->Fit(exp_fit,"R");
-
-  coincidence_plot->Draw();
-  TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_wide_timing.root","RECREATE");
-  output_file->cd();
-  coincidence_plot->Write("coincidence_plot_timing");
+  multiplet_time_1->Write("multiplet_time_1");
+  multiplet_time_2->Write("multiplet_time_2");
   output_file->Close();
 }
 
@@ -88,6 +75,7 @@ int main()
   Long64_t multi_entry; //Multiplet Entry
   ULong64_t chain_num; //Sim chain number
   ULong64_t temp_chain_num=1;
+  double multiplets [2]; 
 
   //Accessing branches
   //sim_tree->SetBranchStatus("*",1);
@@ -96,7 +84,8 @@ int main()
   sim_tree->SetBranchAddress("Channel",&channel);
   sim_tree->SetBranchAddress("ChainNumber",&chain_num);
   sim_tree->SetBranchAddress("Time",&time);
-
+  sim_tree->SetBranchAddress("MultipletEnergy", multiplets);
+  
   //Get number of entries
   int numEntries = sim_tree->GetEntries();
   cout<<"Number of entries is "<< numEntries<<endl;
@@ -112,6 +101,8 @@ int main()
   vector<pair<double,double>> coincidence_energy;
   vector<pair<double,double>> coincidence_time;
   vector<pair<int,int>> coincidence_channel;
+  vector<pair<double, double>> multiplet_energy_prompt;
+  vector<pair<double, double>> multiplet_energy_delayed;
 
   //Energy cuts
   double prompt_low=1500, prompt_high=6500;
@@ -143,6 +134,7 @@ int main()
 		      coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
 		      coincidence_time.push_back(make_pair(prompt_time,delayed_time));
 		      coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
+		      multiplet_energy_delayed.push_back(make_pair(multiplets[0],multiplets[1]));
 		      //prompt_event_found=0;
 		    }
 		  else
@@ -159,6 +151,7 @@ int main()
 		      prompt_time=time;
 		      prompt_channel=channel;
 		      prompt_event_found=1;
+		      multiplet_energy_prompt.push_back(make_pair(multiplets[0],multiplets[1]));
 		    }
 		  else
 		    {
@@ -179,9 +172,8 @@ int main()
     }
   
   //Plotting prompt energy and delayed energy in a 2d histogram
-  PlotCoincidence(coincidence_energy,prompt_low,prompt_high,delayed_low,delayed_high); 
-  PlotCoincidenceTime(coincidence_time,time_high);
-  
+  PlotMultiplet(multiplet_energy_prompt,coincidence_time,delayed_low,delayed_high,delayed_low,delayed_high); 
+    
   return 0;
 }
 
