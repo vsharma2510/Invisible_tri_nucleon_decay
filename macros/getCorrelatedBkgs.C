@@ -75,9 +75,9 @@ int main(int argc, char **argv)
   int prompt_channel;
   double delayed_energy,delayed_time;
   int delayed_channel;
-  vector<pair<double,double>> coincidence_energy;
-  vector<pair<double,double>> coincidence_time;
-  vector<pair<int,int>> coincidence_channel;
+  vector<pair<double,double> > coincidence_energy;
+  vector<pair<double,double> > coincidence_time;
+  vector<pair<int,int> > coincidence_channel;
 
   //Tagging procedure if narrow cut is selected
   if(strcmp(argv[1], "n"))
