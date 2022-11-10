@@ -26,7 +26,7 @@
 
 using namespace std;
 
-void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,double prompt_high,double delayed_low,double delayed_high)
+void PlotCoincidence(vector<pair<double,double> > pair_vector,double prompt_low,double prompt_high,double delayed_low,double delayed_high)
 {
   TH2D* coincidence_plot = new TH2D("h_coinc","Delayed energy vs Prompt energy",prompt_high-prompt_low,prompt_low,prompt_high,delayed_high-delayed_low,delayed_low,delayed_high);
   for(auto i=0;i<pair_vector.size();++i)
@@ -41,7 +41,7 @@ void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,d
   coincidence_plot->Write("coincidence_plot");
 }
 
-void PlotCoincidenceTime(vector<pair<double,double>> pair_vector, double range)
+void PlotCoincidenceTime(vector<pair<double,double> > pair_vector, double range)
 {
   TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range/15,0,range);
   for(auto i=0;i<pair_vector.size();++i)
