@@ -27,14 +27,15 @@
 
 using namespace std;
 
-void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,double prompt_high,double delayed_low,double delayed_high)
+void PlotCoincidence(vector<pair<double,double> > pair_vector,double prompt_low,double prompt_high,double delayed_low,double delayed_high)
 {
   //Define 2D histogram for plotting delayed energy vs prompt energy of coincident events
   TH2D* coincidence_plot = new TH2D("h_coinc","Delayed energy vs Prompt energy",(prompt_high-prompt_low)/100,prompt_low,prompt_high,(delayed_high-delayed_low)/100,delayed_low,delayed_high);
-  for(auto i=0;i<pair_vector.size();++i)
+  //for(auto i=0;i<pair_vector.size();++i)
+  for(std::vector<pair<double, double> >::iterator i = pair_vector.begin(); i != pair_vector.end(); i++)
     {
       //Fill plot with values in pair_vector containing coincident event energy
-      coincidence_plot->Fill(pair_vector.at(i).first,pair_vector.at(i).second);
+      coincidence_plot->Fill((*i).first,(*i).second);
     }
   coincidence_plot->GetXaxis()->SetTitle("Prompt Energy [keV]");
   coincidence_plot->GetYaxis()->SetTitle("Delayed Energy [keV]");
@@ -45,13 +46,14 @@ void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,d
   output_file->Close();
 }
 
-void PlotCoincidenceTime(vector<pair<double,double>> pair_vector,double range)
+void PlotCoincidenceTime(vector<pair<double,double> > pair_vector,double range)
 {
   //Define 2D histogram for plotting time difference between delayed events and prompt events
   TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range/15,0,range);
-  for(auto i=0;i<pair_vector.size();++i)
+  //for(auto i=0;i<pair_vector.size();++i)
     {
       //Fill plot with values in pair_vector containing time differences between coincident events
+      //coincidence_plot->Fill(pair_vector.at(i).second-pair_vector.at(i).first);
       coincidence_plot->Fill(pair_vector.at(i).second-pair_vector.at(i).first);
     }
   coincidence_plot->GetXaxis()->SetTitle("Delayed Time - Prompt Time [s]");
