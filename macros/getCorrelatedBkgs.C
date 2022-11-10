@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 
   //Opening ares simulation file
   TString filepath = argv[2];
-  TFile* sim_file = TFile::Open(filepath); //TODO!! Change the sim_file path
+  TFile* sim_file = TFile::Open(filepath);
   if(!sim_file){cout<<"Error opening sim root file!"<<endl;}
 
   //Accessing event tree
@@ -239,4 +239,5 @@ int main(int argc, char **argv)
         }
       cout<<"Number of bkg tags for broad cut is: "<<coincidence_energy.size()<<endl;
     }
+  return 0;
 }
