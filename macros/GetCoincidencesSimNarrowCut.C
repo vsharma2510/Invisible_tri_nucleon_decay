@@ -43,7 +43,7 @@ void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,d
 
 void PlotCoincidenceTime(vector<pair<double,double>> pair_vector, double range)
 {
-  TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range/30,0,range);
+  TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range/15,0,range);
   for(auto i=0;i<pair_vector.size();++i)
     {
       coincidence_plot->Fill(pair_vector.at(i).second-pair_vector.at(i).first);
@@ -52,18 +52,21 @@ void PlotCoincidenceTime(vector<pair<double,double>> pair_vector, double range)
   coincidence_plot->GetYaxis()->SetTitle("Counts");
 
   //TF1* exp_fit = new TF1("exp_fit","([0]*exp(-(x)/(60*[1]))+[2])+ ([3]*exp(-(x)/(60*[4])))",40,1800);
-  TF1* exp_fit = new TF1("exp_fit","([0]*exp(-(x)/(60*[1]))+[2])",40,1800);
+  TF1* exp_fit = new TF1("exp_fit","([0]*exp(-(x)/(60*[1])))",40,1800);
   //exp_fit->FixParameter(1,5.2);
   exp_fit->SetParameter(0,500);
   exp_fit->SetParameter(1,5.2);
-  exp_fit->SetParameter(2,1);
+  //exp_fit->SetParameter(2,1);
   exp_fit->SetParName(1,"#tau (min)");
   //exp_fit->SetParName(4,"#tau2 (min)");
   //exp_fit->SetParameter(3,10);
   //exp_fit->SetParameter(4,540);
   //exp_fit->SetParameters(0,-0.002,1);
   exp_fit->SetLineWidth(2);
-  coincidence_plot->Fit(exp_fit,"R");
+  //coincidence_plot->Sumw2(1);
+  coincidence_plot->Fit(exp_fit,"LL","R");
+
+  cout<<"Fitted half life is "<<(exp_fit->GetParameter(1))*log(2)<<" and error is "<<(exp_fit->GetParError(1))*log(2)<<endl;
 
   TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_narrow_timing.root","RECREATE");
   output_file->cd();

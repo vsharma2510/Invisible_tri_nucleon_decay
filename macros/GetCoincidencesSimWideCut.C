@@ -30,7 +30,7 @@ using namespace std;
 void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,double prompt_high,double delayed_low,double delayed_high)
 {
   //Define 2D histogram for plotting delayed energy vs prompt energy of coincident events
-  TH2D* coincidence_plot = new TH2D("h_coinc","Delayed energy vs Prompt energy",(prompt_high-prompt_low)/25,prompt_low,prompt_high,(delayed_high-delayed_low)/25,delayed_low,delayed_high);
+  TH2D* coincidence_plot = new TH2D("h_coinc","Delayed energy vs Prompt energy",(prompt_high-prompt_low)/100,prompt_low,prompt_high,(delayed_high-delayed_low)/100,delayed_low,delayed_high);
   for(auto i=0;i<pair_vector.size();++i)
     {
       //Fill plot with values in pair_vector containing coincident event energy
@@ -48,7 +48,7 @@ void PlotCoincidence(vector<pair<double,double>> pair_vector,double prompt_low,d
 void PlotCoincidenceTime(vector<pair<double,double>> pair_vector,double range)
 {
   //Define 2D histogram for plotting time difference between delayed events and prompt events
-  TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range/30,0,range);
+  TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range/15,0,range);
   for(auto i=0;i<pair_vector.size();++i)
     {
       //Fill plot with values in pair_vector containing time differences between coincident events
@@ -58,11 +58,14 @@ void PlotCoincidenceTime(vector<pair<double,double>> pair_vector,double range)
   coincidence_plot->GetYaxis()->SetTitle("Counts");
   
   //TF1* exp_fit = new TF1("exp_fit","expo(0)+pol0(2)",0,range);
-  TF1* exp_fit = new TF1("exp_fit","([0]*exp(-(x)/(60*[1]))+[2])",40,1800);
-  exp_fit->SetParameters(8,5.2,100);
+  TF1* exp_fit = new TF1("exp_fit","([0]*exp(-(x)/(60*[1]))+[2])",10,1800);
+  exp_fit->SetParameters(8,5.2,400);
   exp_fit->SetParName(1,"#tau (min)");
-  coincidence_plot->Fit(exp_fit,"R");
+  //coincidence_plot->Sumw2(1);
+  coincidence_plot->Fit(exp_fit, "R");
 
+  cout<<"Fitted half life is "<<(exp_fit->GetParameter(1))*log(2)<<" and error is "<<(exp_fit->GetParError(1))*log(2)<<endl;
+  
   coincidence_plot->Draw();
   TFile* output_file = TFile::Open("../output_plots/127In_coincidence_output_wide_timing.root","RECREATE");
   output_file->cd();
