@@ -1,0 +1,6 @@
+  [SETUP]  Diana software environment set to /storage/gpfs_data/cuore/users/vsharma/Miscalibration_sw/cuoresw
+  [SETUP]  CUORE DB Host : dbfarm-2:35432
+  [SETUP]  CUORE DB User : cuore
+  [SETUP]  CUORE DB Name : qdb
+Number of entries is 104674255
+Number of bkg tags for narrow cut is: 8

@@ -1,0 +1,6 @@
+universe = vanilla
+output = /storage/gpfs_data/cuore/users/vsharma/Invisible_tri_nucleon_decay/macros/job_scripts/correlatedBkgs_n.out
+error = /storage/gpfs_data/cuore/users/vsharma/Invisible_tri_nucleon_decay/macros/job_scripts/correlatedBkgs_n.err
+request_memory = 1gb
+executable = /storage/gpfs_data/cuore/users/vsharma/Invisible_tri_nucleon_decay/macros/job_scripts/correlatedBkgs_n.sh
+queue

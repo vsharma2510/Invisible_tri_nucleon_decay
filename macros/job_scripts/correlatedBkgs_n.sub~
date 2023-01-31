@@ -1,0 +1,6 @@
+universe = vanilla
+output = /storage/gpfs_data/cuore/users/vsharma/Invisible_tri_nucleon_decay/cnaf/job_scripts/ra226-pb210-Bk/ra226-pb210.out
+error = /storage/gpfs_data/cuore/users/vsharma/Invisible_tri_nucleon_decay/cnaf/job_scripts/ra226-pb210-Bk/ra226-pb210.error
+request_memory = 1gb
+executable = /storage/gpfs_data/cuore/users/vsharma/Invisible_tri_nucleon_decay/cnaf/job_scripts/ra226-pb210-Bk/ra226-pb210-Bk.sh
+queue
