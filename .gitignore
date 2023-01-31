@@ -1,1 +1,6 @@
 .vscode
+./job_scripts
+./output_plots
+./simulation_output
+./test_macros
+./test_output
