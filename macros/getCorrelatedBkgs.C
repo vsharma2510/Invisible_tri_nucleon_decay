@@ -31,14 +31,14 @@ int main(int argc, char **argv)
 
   if(argc==1)
     {
-      cout<<"Input 'w' for wide cut tagging"<<endl;
+      cout<<"Input 'b' for broad cut tagging"<<endl;
       cout<<"Input 'n' for narrow cut tagging"<<endl;
       return 0;
     }
 
   //Opening ares simulation file
   TString filepath = argv[2];
-  TFile* sim_file = TFile::Open(filepath); //TODO!! Change the sim_file path
+  TFile* sim_file = TFile::Open(filepath);
   if(!sim_file){cout<<"Error opening sim root file!"<<endl;}
 
   //Accessing event tree
@@ -75,12 +75,12 @@ int main(int argc, char **argv)
   int prompt_channel;
   double delayed_energy,delayed_time;
   int delayed_channel;
-  vector<pair<double,double>> coincidence_energy;
-  vector<pair<double,double>> coincidence_time;
-  vector<pair<int,int>> coincidence_channel;
+  vector<pair<double,double> > coincidence_energy;
+  vector<pair<double,double> > coincidence_time;
+  vector<pair<int,int> > coincidence_channel;
 
   //Tagging procedure if narrow cut is selected
-  if(strcmp(argv[1], "n"))
+  if(!strcmp(argv[1], "n"))
     {
       //Energy cuts
       double prompt_low=1587, prompt_high=1607;
@@ -170,8 +170,8 @@ int main(int argc, char **argv)
       cout<<"Number of bkg tags for narrow cut is: "<<coincidence_energy.size()<<endl;
     }
 
-  //Tagging procedure if wide cut is selected
-  if(strcmp(argv[1], "w"))
+  //Tagging procedure if broad cut is selected
+  if(!strcmp(argv[1], "b"))
     {
       //Energy cuts
       double prompt_low=1500, prompt_high=6500;
@@ -239,4 +239,5 @@ int main(int argc, char **argv)
         }
       cout<<"Number of bkg tags for broad cut is: "<<coincidence_energy.size()<<endl;
     }
+  return 0;
 }

@@ -51,10 +51,11 @@ void PlotCoincidenceTime(vector<pair<double,double> > pair_vector,double range)
   //Define 2D histogram for plotting time difference between delayed events and prompt events
   TH1D* coincidence_plot = new TH1D("h_coinc","Delayed Time - Prompt Time",range/15,0,range);
   //for(auto i=0;i<pair_vector.size();++i)
+  for(std::vector<pair<double, double> >::iterator i = pair_vector.begin(); i != pair_vector.end(); i++)
     {
       //Fill plot with values in pair_vector containing time differences between coincident events
       //coincidence_plot->Fill(pair_vector.at(i).second-pair_vector.at(i).first);
-      coincidence_plot->Fill(pair_vector.at(i).second-pair_vector.at(i).first);
+      coincidence_plot->Fill((*i).second-(*i).first);
     }
   coincidence_plot->GetXaxis()->SetTitle("Delayed Time - Prompt Time [s]");
   coincidence_plot->GetYaxis()->SetTitle("Counts");
@@ -114,9 +115,9 @@ int main()
   int prompt_channel;
   double delayed_energy,delayed_time;
   int delayed_channel;
-  vector<pair<double,double>> coincidence_energy;
-  vector<pair<double,double>> coincidence_time;
-  vector<pair<int,int>> coincidence_channel;
+  vector<pair<double,double> > coincidence_energy;
+  vector<pair<double,double> > coincidence_time;
+  vector<pair<int,int> > coincidence_channel;
 
   //Energy cuts
   double prompt_low=1500, prompt_high=6500;
