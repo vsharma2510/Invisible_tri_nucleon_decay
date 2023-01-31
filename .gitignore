@@ -4,3 +4,5 @@
 ./simulation_output
 ./test_macros
 ./test_output
+./cnaf
+./plots
