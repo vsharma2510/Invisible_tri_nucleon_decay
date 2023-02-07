@@ -33,6 +33,7 @@ int main(int argc, char **argv)
     {
       cout<<"Input 'b' for broad cut tagging"<<endl;
       cout<<"Input 'n' for narrow cut tagging"<<endl;
+      cout<<"Input file address required"<<endl;
       return 0;
     }
 
@@ -52,7 +53,7 @@ int main(int argc, char **argv)
   ULong64_t chain_num; //Sim chain num
   int chain_change; //Variable to keep track of chain changes
   ULong64_t temp_chain_num=1;
-  double multiplet_energy [2];
+  double multiplet_energy [100];
 
   //Accessing branches
   sim_tree->SetBranchAddress("Multiplicity",&multiplicity);
@@ -78,7 +79,7 @@ int main(int argc, char **argv)
   vector<pair<double,double> > coincidence_energy;
   vector<pair<double,double> > coincidence_time;
   vector<pair<int,int> > coincidence_channel;
-
+  
   //Tagging procedure if narrow cut is selected
   if(!strcmp(argv[1], "n"))
     {
@@ -88,7 +89,7 @@ int main(int argc, char **argv)
 
       //Time cut
       double time_low=0.01, time_high=1800;
-
+      
       //Looping over tree entries
       for(int e=0;e<numEntries;e++)
         {
@@ -104,7 +105,7 @@ int main(int argc, char **argv)
                   //In case prompt event has already been found, look for delayed event
                   if(prompt_event_found)
                     {
-                      //If either multiplet passes delayed energy cut, store multiplet energy
+		      //If either multiplet passes delayed energy cut, store multiplet energy
                       if(multiplet_energy[0]>delayed_low && multiplet_energy[0]<delayed_high && time-prompt_time>time_low && time-prompt_time<time_high)
                         {
                           delayed_event_found=1;
@@ -239,5 +240,7 @@ int main(int argc, char **argv)
         }
       cout<<"Number of bkg tags for broad cut is: "<<coincidence_energy.size()<<endl;
     }
+  sim_file->Close();
+  cout<<"Finished"<<endl;
   return 0;
 }
