@@ -1,4 +1,4 @@
-all: GetCoincidenceWide GetCoincidenceNarrow Get_M2_bkg_broad Get_M2_bkg_narrow getCorrelatedBkgs
+all: GetCoincidenceWide GetCoincidenceNarrow Get_M2_bkg_broad Get_M2_bkg_narrow GetCorrelatedBkgs
 CC=g++
 CFLAGS= -g -Wall `root-config --cflags`
 LDFLAGS= `root-config --libs`
@@ -15,8 +15,8 @@ Get_M2_bkg_broad: Get_M2_bkg_broad.C
 Get_M2_bkg_narrow:  Get_M2_bkg_narrow.C
 	$(CC)  Get_M2_bkg_narrow.C $(CFLAGS) $(LDFLAGS) -o  Get_M2_bkg_narrow
 
-getCorrelatedBkgs: getCorrelatedBkgs.C
-	$(CC) getCorrelatedBkgs.C $(CFLAGS) $(LDFLAGS) -o getCorrelatedBkgs
+GetCorrelatedBkgs: GetCorrelatedBkgs.cpp
+	$(CC) GetCorrelatedBkgs.cpp $(CFLAGS) $(LDFLAGS) -o GetCorrelatedBkgs
 
 clean:
-	rm ./GetCoincidenceWide ./GetCoincidenceNarrow ./Get_M2_bkg_narrow ./Get_M2_bkg_broad
+	rm ./GetCoincidenceWide ./GetCoincidenceNarrow ./Get_M2_bkg_narrow ./Get_M2_bkg_broad ./GetCorrelatedBkgs
