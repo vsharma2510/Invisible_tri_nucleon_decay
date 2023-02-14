@@ -30,9 +30,9 @@ void StoreCoincidences(vector<pair<double,double> > energyVec, vector<pair<doubl
 {
   TFile* outputFile = TFile::Open(outputFilepath, "RECREATE");
   outputFile->cd();
-  outputFile->Write("energyVec");
-  outputFile->Write("timeVec");
-  outputFile->Write("channelVec");
+  outputFile->WriteObject(&energyVec, "energyVec");
+  outputFile->WriteObject(&timeVec, "energyTime");
+  outputFile->WriteObject(&channelVec, "energyVec");
   outputFile->Close();
 }
 
