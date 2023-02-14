@@ -64,7 +64,7 @@ int main(int argc, char **argv)
   ULong64_t chain_num; //Sim chain num
   int chain_change; //Variable to keep track of chain changes
   ULong64_t temp_chain_num=1;
-  double multiplet_energy [2];
+  double multiplet_energy [988];
 
   //Accessing branches
   sim_tree->SetBranchAddress("Multiplicity",&multiplicity);
@@ -252,7 +252,8 @@ int main(int argc, char **argv)
       cout<<"Number of bkg tags for broad cut is: "<<coincidence_energy.size()<<endl;
     }
 
+  cout<<"Storing coincidences in output root file"<<endl;
   StoreCoincidences(coincidence_energy, coincidence_time, coincidence_channel, outputFilepath);
-  
+
   return 0;
 }
