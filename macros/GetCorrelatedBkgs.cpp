@@ -251,5 +251,8 @@ int main(int argc, char **argv)
         }
       cout<<"Number of bkg tags for broad cut is: "<<coincidence_energy.size()<<endl;
     }
+
+  StoreCoincidences(coincidence_energy, coincidence_time, coincidence_channel, outputFilepath);
+  
   return 0;
 }
