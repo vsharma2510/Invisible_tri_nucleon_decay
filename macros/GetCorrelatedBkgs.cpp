@@ -26,19 +26,31 @@
 
 using namespace std;
 
+void StoreCoincidences(vector<pair<double,double> > energyVec, vector<pair<double, double> > timeVec, vector<pair<int, int> > channelVec, TString outputFilepath)
+{
+  TFile* outputFile = TFile::Open(outputFilepath, "RECREATE");
+  outputFile->cd();
+  outputFile->Write("energyVec");
+  outputFile->Write("timeVec");
+  outputFile->Write("channelVec");
+  outputFile->Close();
+}
+
 int main(int argc, char **argv)
 {
 
-  if(argc==1)
+  if(argc<4)
     {
       cout<<"Input 'b' for broad cut tagging"<<endl;
       cout<<"Input 'n' for narrow cut tagging"<<endl;
+      cout<<"Followed by path of input file (Ares) and output file (stores coincidences as vectors)"<<endl;
       return 0;
     }
 
   //Opening ares simulation file
-  TString filepath = argv[2];
-  TFile* sim_file = TFile::Open(filepath);
+  TString inputFilepath = argv[2];
+  TString outputFilepath = argv[3];
+  TFile* sim_file = TFile::Open(inputFilepath);
   if(!sim_file){cout<<"Error opening sim root file!"<<endl;}
 
   //Accessing event tree
