@@ -33,7 +33,7 @@ vector<pair<double, double> > summedEvsTime, TString outputFilepath)
   outputFile->cd();
   outputFile->WriteObject(&energyVec, "energyVec");
   outputFile->WriteObject(&timeVec, "energyTime");
-  outputFile->WriteObject(&channelVec, "energyVec");
+  outputFile->WriteObject(&channelVec, "channelVec");
   outputFile->WriteObject(&summedEvsTime, "summedEvsTime");
   outputFile->Close();
 }
