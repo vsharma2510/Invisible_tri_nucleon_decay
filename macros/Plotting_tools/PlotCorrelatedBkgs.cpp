@@ -44,10 +44,22 @@ int main(int argc, char **argv)
 {
     TString inputFilename = argv[1];
     TFile* inputFile = TFile::Open(inputFilename, "READ");
-    vector<pair<double, double> > *energyVec;
-    inputFile->GetObject("energyVec", energyVec);
-    inputFile->GetObject("timeVec", timeVec);
+    vector<pair<double, double> > *summedEvsTime;
+    
+    inputFile->GetObject("summedEvsTime", summedEvsTime);
 
     // 2D histogram of broad cut coincidence tags (Summed M2 energy vs Time difference)
-    TH2D* energyVsTime = new TH2D("energyVsTime", "Summed M2 energy vs Time difference", 100, )
+    TH2D* energyVsTime = new TH2D("energyVsTime", "Summed M2 energy vs Time difference", 100, 0, 100, 100, 0, 20000);
+    for(std::vector<pair<double, double> >::iterator i = summedEvsTime->begin(); i != summedEvsTime->end(); i++)
+    {
+      //Fill plot with values in pair_vector containing summed coincident event energy and time
+      energyVsTime->Fill((*i).first,(*i).second);
+    }
+    energyVsTime->GetXaxis()->SetTitle("Prompt Energy [keV]");
+    energyVsTime->GetYaxis()->SetTitle("Delayed Energy [keV]");
+    energyVsTime->Draw();
+    TFile* outputFile = TFile::Open("../output_plots/","RECREATE");
+    outputFile->cd();
+    energyVsTime->Write("energyVsTime");
+    outputFile->Close();
 }
