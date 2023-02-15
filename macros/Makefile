@@ -19,4 +19,4 @@ getCorrelatedBkgs: getCorrelatedBkgs.C
 	$(CC) getCorrelatedBkgs.C $(CFLAGS) $(LDFLAGS) -o getCorrelatedBkgs
 
 clean:
-	rm ./GetCoincidenceWide ./GetCoincidenceNarrow ./Get_M2_bkg_narrow ./Get_M2_bkg_broad
+	rm ./GetCoincidenceWide ./GetCoincidenceNarrow ./Get_M2_bkg_narrow ./Get_M2_bkg_broad ./getCorrelatedBkgs
