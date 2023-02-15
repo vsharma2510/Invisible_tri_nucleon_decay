@@ -26,7 +26,8 @@
 
 using namespace std;
 
-void StoreCoincidences(vector<pair<double,double> > energyVec, vector<pair<double, double> > timeVec, vector<pair<int, int> > channelVec, TString outputFilepath)
+void StoreCoincidences(vector<pair<double,double> > energyVec, vector<pair<double, double> > timeVec, vector<pair<int, int> > channelVec, 
+vector<pair<double, double> > summedEvsTime, TString outputFilepath)
 {
   TFile* outputFile = TFile::Open(outputFilepath, "RECREATE");
   outputFile->cd();
@@ -89,6 +90,7 @@ int main(int argc, char **argv)
   int delayed_channel;
   vector<pair<double,double> > coincidence_energy;
   vector<pair<double,double> > coincidence_time;
+  vector<pair<double, double> > summed_energy_time; // Stores summed energy and time difference betweeen prompt and delayed events 
   vector<pair<int,int> > coincidence_channel;
 
   //Tagging procedure if narrow cut is selected
@@ -135,6 +137,7 @@ int main(int argc, char **argv)
                           coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
                           coincidence_time.push_back(make_pair(prompt_time,delayed_time));
                           coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
+                          summed_energy_time.push_back(make_pair(prompt_energy+delayed_energy, delayed_time-prompt_time));
                           delayed_event_found=0;
                         }
                       else
@@ -253,7 +256,7 @@ int main(int argc, char **argv)
     }
 
   cout<<"Storing coincidences in output root file"<<endl;
-  StoreCoincidences(coincidence_energy, coincidence_time, coincidence_channel, outputFilepath);
+  StoreCoincidences(coincidence_energy, coincidence_time, coincidence_channel, summed_energy_time, outputFilepath);
 
   return 0;
 }
