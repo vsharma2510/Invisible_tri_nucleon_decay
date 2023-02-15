@@ -42,8 +42,8 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    TString inputFilename = argv[1];
-    TFile* inputFile = TFile::Open(inputFilename, "READ");
+    string inputFilename = argv[1];
+    TFile* inputFile = TFile::Open(inputFilename.c_str(), "READ");
     vector<pair<double, double> > *summedEvsTime;
     
     inputFile->GetObject("summedEvsTime", summedEvsTime);
@@ -61,20 +61,25 @@ int main(int argc, char **argv)
 
     TPad *center_pad = new TPad("center_pad", "center_pad", 0.0, 0.0, 0.6, 0.6);
     center_pad->Draw();
-    right_pad = new TPad("right_pad", "right_pad",0.55,0.0,1.0,0.6);
+    TPad *right_pad = new TPad("right_pad", "right_pad",0.55,0.0,1.0,0.6);
     right_pad->Draw();
 
     TH1D* projY = energyVsTime->ProjectionY();
 
+    center_pad->cd();
     energyVsTime->GetXaxis()->SetTitle("Prompt Energy [keV]");
     energyVsTime->GetYaxis()->SetTitle("Delayed Energy [keV]");
     energyVsTime->Draw();
 
-    string fileNameExtension = ".root"
-    size_t pos = str.find(fileNameExtension);
+    right_pad->cd();
+    projY->Draw("bar");
+
+    string fileNameExtension = ".root";
+    size_t pos = inputFilename.find(fileNameExtension);
     string outputFilename = inputFilename.replace(pos, fileNameExtension.length(), "_2DH.root");
-    TFile* outputFile = TFile::Open(outputFilename,"RECREATE");
+    TFile* outputFile = TFile::Open(outputFilename.c_str(),"RECREATE");
     outputFile->cd();
-    energyVsTime->Write("energyVsTime");
+    c1->Write("energyVsTime");
+    //energyVsTime->Write("energyVsTime");
     outputFile->Close();
 }
