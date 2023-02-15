@@ -55,10 +55,25 @@ int main(int argc, char **argv)
       //Fill plot with values in pair_vector containing summed coincident event energy and time
       energyVsTime->Fill((*i).first,(*i).second);
     }
+
+    TCanvas *c1 = new TCanvas("c1", "c1", 900,900);
+    gStyle->SetOptStat(0);
+
+    TPad *center_pad = new TPad("center_pad", "center_pad", 0.0, 0.0, 0.6, 0.6);
+    center_pad->Draw();
+    right_pad = new TPad("right_pad", "right_pad",0.55,0.0,1.0,0.6);
+    right_pad->Draw();
+
+    TH1D* projY = energyVsTime->ProjectionY();
+
     energyVsTime->GetXaxis()->SetTitle("Prompt Energy [keV]");
     energyVsTime->GetYaxis()->SetTitle("Delayed Energy [keV]");
     energyVsTime->Draw();
-    TFile* outputFile = TFile::Open("../output_plots/","RECREATE");
+
+    string fileNameExtension = ".root"
+    size_t pos = str.find(fileNameExtension);
+    string outputFilename = inputFilename.replace(pos, fileNameExtension.length(), "_2DH.root");
+    TFile* outputFile = TFile::Open(outputFilename,"RECREATE");
     outputFile->cd();
     energyVsTime->Write("energyVsTime");
     outputFile->Close();
