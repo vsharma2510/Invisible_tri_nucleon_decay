@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 {
     string inputFilename = argv[1];
     TFile* inputFile = TFile::Open(inputFilename.c_str(), "READ");
-    vector<pair<double, double> > *summedEvsTime;
+    vector<pair<double, double> >  * summedEvsTime;
     
     inputFile->GetObject("summedEvsTime", summedEvsTime);
 
@@ -54,6 +54,7 @@ int main(int argc, char **argv)
     {
       //Fill plot with values in pair_vector containing summed coincident event energy and time
       energyVsTime->Fill((*i).first,(*i).second);
+      cout<<(*i).first<<" "<<(*i).second<<endl;
     }
 
     TCanvas *c1 = new TCanvas("c1", "c1", 900,900);
