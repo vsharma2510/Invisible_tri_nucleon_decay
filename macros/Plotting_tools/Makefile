@@ -1,4 +1,4 @@
-all: GetCoincidenceWide GetCoincidenceNarrow GetCoincidenceWideAcc PlotE1vsE2 Get_M2_bkg_broad Get_M2_bkg_narrow
+all: GetCoincidenceWide GetCoincidenceNarrow GetCoincidenceWideAcc PlotE1vsE2 Get_M2_bkg_broad Get_M2_bkg_narrow PlotCorrelatedBkgs
 CC=g++
 CFLAGS= -g -Wall `root-config --cflags`
 LDFLAGS= `root-config --libs`
@@ -21,5 +21,8 @@ Get_M2_bkg_broad: Get_M2_bkg_broad.C
 Get_M2_bkg_narrow:  Get_M2_bkg_narrow.C
 	$(CC)  Get_M2_bkg_narrow.C $(CFLAGS) $(LDFLAGS) -o  Get_M2_bkg_narrow
 
+PlotCorrelatedBkgs: PlotCorrelatedBkgs.cpp
+	$(CC) PlotCorrelatedBkgs.cpp $(CFLAGS) $(LDFLAGS) -o PlotCorrelatedBkgs
+
 clean:
-	rm ./GetCoincidenceWide ./GetCoincidenceNarrow ./GetCoincidenceWideAcc ./PlotE1vsE2 ./Get_M2_bkg_narrow  ./Get_M2_bkg_broad
+	rm ./GetCoincidenceWide ./GetCoincidenceNarrow ./GetCoincidenceWideAcc ./PlotE1vsE2 ./Get_M2_bkg_narrow  ./Get_M2_bkg_broad ./PlotCorrelatedBkgs
