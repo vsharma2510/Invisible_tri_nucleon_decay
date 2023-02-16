@@ -59,9 +59,9 @@ int main(int argc, char **argv)
     TCanvas *c1 = new TCanvas("c1", "c1", 900,900);
     gStyle->SetOptStat(0);
 
-    TPad *center_pad = new TPad("center_pad", "center_pad", 0.0, 0.0, 0.6, 0.6);
+    TPad *center_pad = new TPad("center_pad", "center_pad", 0.0, 0.0, 0.6, 1.0);
     center_pad->Draw();
-    TPad *right_pad = new TPad("right_pad", "right_pad",0.55,0.0,1.0,0.6);
+    TPad *right_pad = new TPad("right_pad", "right_pad",0.55,0.0,1.0,1.0);
     right_pad->Draw();
 
     TH1D* projY = energyVsTime->ProjectionY();
