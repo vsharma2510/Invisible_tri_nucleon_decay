@@ -53,6 +53,7 @@ int main(int argc, char **argv)
     for(std::vector<pair<double, double> >::iterator i = summedEvsTime->begin(); i != summedEvsTime->end(); i++)
     {
       //Fill plot with values in pair_vector containing summed coincident event energy and time
+      cout<<"Filling histogram"<<endl;
       energyVsTime->Fill((*i).first,(*i).second);
       cout<<(*i).first<<" "<<(*i).second<<endl;
     }
