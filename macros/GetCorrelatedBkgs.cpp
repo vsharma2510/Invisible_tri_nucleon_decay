@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     {
       cout<<"Input 'b' for broad cut tagging"<<endl;
       cout<<"Input 'n' for narrow cut tagging"<<endl;
-      cout<<"Followed by path of input file (Ares) and output file (stores coincidences as vectors)"<<endl;
+      cout<<"Followed by path of input file (Ares) and output file (stores coincidences in TTrees)"<<endl;
       return 0;
     }
 
