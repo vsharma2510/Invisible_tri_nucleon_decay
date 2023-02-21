@@ -26,6 +26,7 @@
 
 using namespace std;
 
+/*
 void StoreCoincidences(vector<pair<double,double> > energyVec, vector<pair<double, double> > timeVec, vector<pair<int, int> > channelVec, 
 vector<pair<double, double> > summedEvsTime, TString outputFilepath)
 {
@@ -37,6 +38,7 @@ vector<pair<double, double> > summedEvsTime, TString outputFilepath)
   outputFile->WriteObject(&summedEvsTime, "summedEvsTime");
   outputFile->Close();
 }
+*/
 
 int main(int argc, char **argv)
 {
@@ -89,10 +91,22 @@ int main(int argc, char **argv)
   int prompt_channel;
   double delayed_energy,delayed_time;
   int delayed_channel;
-  vector<pair<double,double> > coincidence_energy;
-  vector<pair<double,double> > coincidence_time;
-  vector<pair<double, double> > summed_energy_time; // Stores summed energy and time difference betweeen prompt and delayed events 
-  vector<pair<int,int> > coincidence_channel;
+  //vector<pair<double,double> > coincidence_energy;
+  //vector<pair<double,double> > coincidence_time;
+  //vector<pair<double, double> > summed_energy_time; // Stores summed energy and time difference betweeen prompt and delayed events 
+  //vector<pair<int,int> > coincidence_channel;
+
+  // Creating output file
+  TFile* outputFile = TFile::Open(outputFilepath, "RECREATE");
+
+  // Creating output TTree to store coincidence data
+  TTree* outTree = new TTree("outTree", "outTree");
+  outTree->Branch("promptChannel", &prompt_channel);
+  outTree->Branch("delayedChannel", &delayed_channel);
+  outTree->Branch("promptEnergy", &prompt_energy);
+  outTree->Branch("delayedEnergy", &delayed_energy);
+  outTree->Branch("promptTime", &prompt_time);
+  outTree->Branch("delayedTime", &delayed_time);
 
   //Tagging procedure if narrow cut is selected
   if(!strcmp(argv[1], "n"))
@@ -135,11 +149,12 @@ int main(int argc, char **argv)
                           delayed_energy=energy;
                           delayed_time=time;
                           delayed_channel=channel;
-                          coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
-                          coincidence_time.push_back(make_pair(prompt_time,delayed_time));
-                          coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
-                          summed_energy_time.push_back(make_pair(prompt_energy+delayed_energy, delayed_time-prompt_time));
-                          delayed_event_found=0;
+                          //coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
+                          //coincidence_time.push_back(make_pair(prompt_time,delayed_time));
+                          //coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
+                          //summed_energy_time.push_back(make_pair(prompt_energy+delayed_energy, delayed_time-prompt_time));
+                          //delayed_event_found=0;
+                          outTree->Fill();
                         }
                       else
                         {
@@ -183,7 +198,7 @@ int main(int argc, char **argv)
               temp_chain_num=chain_num;
             }
         }
-      cout<<"Number of bkg tags for narrow cut is: "<<coincidence_energy.size()<<endl;
+      cout<<"Number of bkg tags for narrow cut is: "<<outTree->GetEntries()<<endl;
     }
 
   //Tagging procedure if broad cut is selected
@@ -216,10 +231,11 @@ int main(int argc, char **argv)
                           delayed_energy=totalEnergy;
                           delayed_time=time;
                           delayed_channel=channel;
-                          coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
-                          coincidence_time.push_back(make_pair(prompt_time,delayed_time));
-                          coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
+                          //coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
+                          //coincidence_time.push_back(make_pair(prompt_time,delayed_time));
+                          //coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
                           //prompt_event_found=0;
+                          outTree->Fill();
                         }
                       else
                         {
@@ -253,11 +269,14 @@ int main(int argc, char **argv)
               temp_chain_num=chain_num;
             }
         }
-      cout<<"Number of bkg tags for broad cut is: "<<coincidence_energy.size()<<endl;
+      cout<<"Number of bkg tags for broad cut is: "<<outTree->GetEntries()<<endl;
     }
 
   cout<<"Storing coincidences in output root file"<<endl;
-  StoreCoincidences(coincidence_energy, coincidence_time, coincidence_channel, summed_energy_time, outputFilepath);
+  outputFile->cd();
+  outputFile->Write("outTree");
+  outputFile->Close();
+  //StoreCoincidences(coincidence_energy, coincidence_time, coincidence_channel, summed_energy_time, outputFilepath);
 
   return 0;
 }
