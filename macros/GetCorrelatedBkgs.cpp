@@ -91,6 +91,7 @@ int main(int argc, char **argv)
   int prompt_channel;
   double delayed_energy,delayed_time;
   int delayed_channel;
+  double summedEnergy, timeDiff;
   //vector<pair<double,double> > coincidence_energy;
   //vector<pair<double,double> > coincidence_time;
   //vector<pair<double, double> > summed_energy_time; // Stores summed energy and time difference betweeen prompt and delayed events 
@@ -107,7 +108,9 @@ int main(int argc, char **argv)
   outTree->Branch("delayedEnergy", &delayed_energy);
   outTree->Branch("promptTime", &prompt_time);
   outTree->Branch("delayedTime", &delayed_time);
-
+  outTree->Branch("summedEnergy", &summedEnergy);
+  outTree->Branch("timeDifference", &timeDiff);
+  outTree->Branch("Multiplicity", &multiplicity);
   //Tagging procedure if narrow cut is selected
   if(!strcmp(argv[1], "n"))
     {
@@ -149,6 +152,8 @@ int main(int argc, char **argv)
                           delayed_energy=energy;
                           delayed_time=time;
                           delayed_channel=channel;
+                          summedEnergy = delayed_energy + prompt_energy;
+                          timeDiff = delayed_time - prompt_time;
                           //coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
                           //coincidence_time.push_back(make_pair(prompt_time,delayed_time));
                           //coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
@@ -231,6 +236,8 @@ int main(int argc, char **argv)
                           delayed_energy=totalEnergy;
                           delayed_time=time;
                           delayed_channel=channel;
+                          summedEnergy = delayed_energy + prompt_energy;
+                          timeDiff = delayed_time - prompt_time;
                           //coincidence_energy.push_back(make_pair(prompt_energy,delayed_energy));
                           //coincidence_time.push_back(make_pair(prompt_time,delayed_time));
                           //coincidence_channel.push_back(make_pair(prompt_channel,delayed_channel));
